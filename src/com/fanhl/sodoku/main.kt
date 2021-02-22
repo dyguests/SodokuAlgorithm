@@ -5,6 +5,7 @@ import com.fanhl.sodoku.util.print
 
 fun main() {
     val board = Sodoku.createBoard()
+    val puzzle = Sodoku.createPuzzle(board)
     board.print()
 }
 

@@ -57,4 +57,15 @@ object Sodoku {
         //矩阵转置
         board.transpose()
     }
+
+    fun createPuzzle(board: Array<Array<Int>>): Array<Array<Int>> {
+        val puzzle = Array(9) { Array(9) { 0 } }
+//        todo
+//        todo
+//        todo
+//        todo
+//        todo
+//        todo
+        return puzzle
+    }
 }
