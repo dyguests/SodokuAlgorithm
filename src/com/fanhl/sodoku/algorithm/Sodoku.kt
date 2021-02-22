@@ -56,13 +56,5 @@ object Sodoku {
         }
         //矩阵转置
         board.transpose()
-//        chooseRowIndex -= (multiplier * sizeOfInnerMatrix)
-//        replacingRowIndex -= (multiplier * sizeOfInnerMatrix)
-//        multiplier = (0 until sizeOfInnerMatrix).random()
-//        chooseRowIndex += (multiplier * sizeOfInnerMatrix)
-//        replacingRowIndex += (multiplier * sizeOfInnerMatrix)
-//        board[chooseRowIndex] = board[replacingRowIndex].also {
-//            board[replacingRowIndex] = board[chooseRowIndex]
-//        }
     }
 }
