@@ -1,5 +1,10 @@
 package com.fanhl.sodoku
 
+import com.fanhl.sodoku.algorithm.Sodoku
+import com.fanhl.sodoku.util.print
+
 fun main() {
-    println(233)
+    val board = Sodoku.createBoard()
+    board.print()
 }
+
