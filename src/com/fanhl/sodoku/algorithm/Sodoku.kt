@@ -5,6 +5,10 @@ import kotlin.math.sqrt
 
 object Sodoku {
     private const val CONST_SIZE = 9
+    /**
+     * 最大尝试次数
+     */
+    private const val MAX_TIMES = CONST_SIZE * 500
 
     fun createBoard(): Array<Array<Int>> {
         val board = Array(9) { Array(9) { 0 } }
@@ -59,13 +63,29 @@ object Sodoku {
     }
 
     fun createPuzzle(board: Array<Array<Int>>): Array<Array<Int>> {
-        val puzzle = Array(9) { Array(9) { 0 } }
-//        todo
-//        todo
-//        todo
-//        todo
-//        todo
-//        todo
+        val puzzle = board.map { it.clone() }.toTypedArray()
+        hollowSimple(puzzle)
+        hollowAdvanced(puzzle)
         return puzzle
+    }
+
+    /**
+     * 挖空
+     *
+     * 保证每个空洞基于当前行、当前行、当前宫只有一个可选值
+     */
+    private fun hollowSimple(puzzle: Array<Array<Int>>) {
+        repeat(MAX_TIMES) {
+
+        }
+    }
+
+    /**
+     * 挖空
+     *
+     * 保证整个puzzle只有一个唯一解
+     */
+    private fun hollowAdvanced(puzzle: Array<Array<Int>>) {
+
     }
 }

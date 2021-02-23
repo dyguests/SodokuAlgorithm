@@ -2,5 +2,5 @@ package com.fanhl.sodoku.util
 
 import java.util.*
 
-fun IntRange.random() =
-        Random().nextInt((endInclusive + 1) - start) + start
+fun Int.random() = (0..this).random()
+fun IntRange.random() = Random().nextInt((endInclusive + 1) - start) + start
