@@ -62,10 +62,10 @@ object Sodoku {
         board.transpose()
     }
 
-    fun createPuzzle(board: Array<Array<Int>>, simpleHole: Int = 30): Array<Array<Int>> {
+    fun createPuzzle(board: Array<Array<Int>>, simpleHole: Int = 30, advancedHole: Int = 0): Array<Array<Int>> {
         val puzzle = board.map { it.clone() }.toTypedArray()
         hollowSimple(puzzle, simpleHole)
-        hollowAdvanced(puzzle)
+        hollowAdvanced(puzzle, advancedHole)
         return puzzle
     }
 
@@ -75,6 +75,24 @@ object Sodoku {
      * 保证每个空洞基于当前行、当前行、当前宫只有一个可选值
      */
     private fun hollowSimple(puzzle: Array<Array<Int>>, cutOff: Int) {
+        hollowWithValidator(puzzle, cutOff) { _puzzle, i, j -> hasUniquePossibleNumber(_puzzle, i, j) }
+    }
+
+    /**
+     * 挖空
+     *
+     * 保证整个puzzle只有一个唯一解
+     */
+    private fun hollowAdvanced(puzzle: Array<Array<Int>>, cutOff: Int) {
+        hollowWithValidator(puzzle, cutOff) { _puzzle, _, _ -> hasUniqueSolution(_puzzle) }
+    }
+
+    /**
+     * 挖空
+     *
+     * 两种挖空的区别仅在于验证方式不一样，这里把验证方法提成参数
+     */
+    private fun hollowWithValidator(puzzle: Array<Array<Int>>, cutOff: Int, validator: (puzzle: Array<Array<Int>>, i: Int, j: Int) -> Boolean) {
         var removedItems = 0
         repeat(MAX_TIMES) {
             val i = (0 until CONST_SIZE).random()
@@ -84,10 +102,10 @@ object Sodoku {
                 return@repeat
             }
             puzzle[i][j] = 0
-            if (findPossibleNumbersInPlace(puzzle, i, j).size != 1) {
-                puzzle[i][j] = temp
-            } else {
+            if (validator(puzzle, i, j)) {
                 removedItems++
+            } else {
+                puzzle[i][j] = temp
             }
 
             if (removedItems == cutOff) {
@@ -96,6 +114,8 @@ object Sodoku {
         }
     }
 
+    private fun hasUniquePossibleNumber(_puzzle: Array<Array<Int>>, i: Int, j: Int) = findPossibleNumbersInPlace(_puzzle, i, j).size == 1
+
     private fun findPossibleNumbersInPlace(puzzle: Array<Array<Int>>, rowIndex: Int, colIndex: Int): Array<Int> {
         val row = puzzle[rowIndex]
         val col = puzzle.col(colIndex)
@@ -103,13 +123,40 @@ object Sodoku {
         return ((1..9).toList() - row.asList() - col.asList() - gong.asList()).toTypedArray()
     }
 
-    /**
-     * 挖空
-     *
-     * 保证整个puzzle只有一个唯一解
-     */
-    private fun hollowAdvanced(puzzle: Array<Array<Int>>) {
+    private fun hasUniqueSolution(puzzle: Array<Array<Int>>): Boolean {
+        val numberOfSolutions = findNumberOfSolutions(puzzle)
+        // println("numberOfSolutions:$numberOfSolutions")
+        return numberOfSolutions == 1
+    }
 
+    /**
+     * 注意：在整个方法执行过程中，puzzle一直在被改变
+     */
+    private fun findNumberOfSolutions(puzzle: Array<Array<Int>>): Int {
+        val (row, col) = findHole(puzzle) ?: return 1
+
+        var numberOfSolutions = 0
+
+        val possibleNumbers = findPossibleNumbersInPlace(puzzle, row, col)
+        for (possibleNumber in possibleNumbers) {
+            puzzle[row][col] = possibleNumber
+            numberOfSolutions += findNumberOfSolutions(puzzle)
+            puzzle[row][col] = 0
+        }
+        return numberOfSolutions
+    }
+
+    private fun findHole(puzzle: Array<Array<Int>>): Pair<Int, Int>? {
+        for (i in 0 until CONST_SIZE * CONST_SIZE) {
+            val row = i / CONST_SIZE
+            val col = i % CONST_SIZE
+            if (puzzle[row][col] == 0) {
+                return Pair(row, col)
+            }
+        }
+        // println("puzzle solution:")
+        // puzzle.println()
+        return null
     }
 
     private fun Array<Array<Int>>.col(colIndex: Int): Array<Int> = map { it[colIndex] }.toTypedArray()

@@ -1,6 +1,6 @@
 package com.fanhl.sodoku.util
 
-fun Array<Array<Int>>.print() {
+fun Array<Array<Int>>.println() {
     println(joinToString("\n") { it.joinToString(" ") })
 }
 
