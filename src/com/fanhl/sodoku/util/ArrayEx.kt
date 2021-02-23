@@ -1,7 +1,7 @@
 package com.fanhl.sodoku.util
 
 fun Array<Array<Int>>.print() {
-    print(joinToString("\n") { it.joinToString(" ") })
+    println(joinToString("\n") { it.joinToString(" ") })
 }
 
 /**
